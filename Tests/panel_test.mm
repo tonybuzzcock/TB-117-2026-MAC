@@ -295,8 +295,13 @@ int main (int argc, char** argv)
         pump (0.2);
     }
     check (fileHasLine (presetFile, "name 3: Big slow flange"), "Return saves the name with the preset");
-    bool gone = true;
-    for (NSView* sv in [panel subviews]) if ([sv isKindOfClass: [NSTextField class]]) gone = false;
+    bool gone = false;
+    for (int tries = 0; tries < 10 && ! gone; ++tries)   // it is taken away just after Return
+    {
+        gone = true;
+        for (NSView* sv in [panel subviews]) if ([sv isKindOfClass: [NSTextField class]]) gone = false;
+        if (! gone) pump (0.1);
+    }
     check (gone, "and the name box goes away");
     renderPNG (panel, dir + "/panel_preset_saved.png");
 
